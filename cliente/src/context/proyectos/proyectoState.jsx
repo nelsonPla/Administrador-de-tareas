@@ -1,15 +1,106 @@
 import React, { useReducer } from 'react'
 
+import uuid from 'react-uuid';
+
 import proyectoContext from './proyectoContext';
 import proyectoReducer from './proyectoReducer';
+import { 
+    FORMULARIO_PROYECTO,
+    OBTENER_PROYECTOS,
+    AGREGAR_PROYECTO,
+    VALIDAR_FORMULARIO,
+    PROYECTO_ACTUAL,
+    ELIMINAR_PROYECTO
+} from '../../types'
 
-const proyectoState = props => {
+
+
+const ProyectoState = props => {
+
+    const proyectos = [
+        { id: 1, nombre: 'Tienda Virtual' },
+        { id: 2, nombre: 'Intranet' },
+        { id: 3, nombre: 'Diseño de sitio Web' },
+        { id: 4, nombre: 'MERN' }
+    ]
+
     const initialState= {
-        nuevoProyecto : false//para la creacion del uevo proyecto
+        proyectos : [],
+        formulario : false,//para la creacion del uevo proyecto
+        errorformulario : false,
+        proyecto: null
     }
 
     // Dispatch para ejecutar las acciones
-    cont [state, dispatch] = useReducer(proyectoReducer, initialState)
+    const [state, dispatch] = useReducer(proyectoReducer, initialState)
 
     // Serie de  funciones  para el CRUD
+    const mostrarFormulario = () => {
+        dispatch({
+            type: FORMULARIO_PROYECTO
+        })
+    }
+
+    //obtener los proyectos
+    const obtenerProyectos = () => {
+        dispatch({
+            type: OBTENER_PROYECTOS,
+            payload: proyectos
+        })
+    }
+
+    //agregar nuevo proyecto
+    const agregarProyecto = proyecto => {
+        proyecto.id = uuid();
+
+        //Insertar el proyecto en el state
+        dispatch({
+            type: AGREGAR_PROYECTO,
+            payload: proyecto
+        })
+    }
+
+    //validar formulario por errores
+    const mostrarError = () => {
+        dispatch({
+            type: VALIDAR_FORMULARIO
+        })
+    }
+
+    //selecciona el proyecto que el usuario le de click
+    const proyectoActual = proyectoId => {//le pasamos el payload un proyecto completo
+        dispatch({
+            type: PROYECTO_ACTUAL,
+            payload: proyectoId
+        })
+    }
+
+    //eliminar un proyecto
+    const eliminarProyecto = proyectoId => {
+        dispatch({
+            type: ELIMINAR_PROYECTO,
+            payload: proyectoId
+        })
+    }
+
+    return (
+        <proyectoContext.Provider
+            value={{
+                proyectos: state.proyectos,
+                formulario: state.formulario,
+                errorformulario: state.errorformulario,
+                proyecto: state.proyecto,
+                mostrarFormulario,
+                obtenerProyectos,
+                agregarProyecto,
+                mostrarError,
+                proyectoActual,
+                eliminarProyecto
+            }}
+        >
+            {props.children}
+        </proyectoContext.Provider>
+    )
 }
+
+export default ProyectoState;
