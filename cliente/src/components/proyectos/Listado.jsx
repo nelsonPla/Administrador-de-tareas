@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import Proyecto from './Proyecto';
 import proyectoContext from '../../context/proyectos/proyectoContext';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 
 const ListadoProyectos = () => {
@@ -12,6 +13,7 @@ const ListadoProyectos = () => {
     //antes del useeffect no debe de abber un return
     useEffect(() => {
         obtenerProyectos()
+        // eslint-disable-next-line
     }, []);
 
     //revisar si ay proyectos
@@ -20,12 +22,19 @@ const ListadoProyectos = () => {
 
     return ( 
         <ul className="listado-proyectos">
+            <TransitionGroup>
             {proyectos.map(proyecto => (
-                <Proyecto
+                <CSSTransition
                     key={proyecto.id}
-                    proyecto={proyecto}
-                />
+                    timeout={200}
+                    classNames="proyecto"
+                >
+                    <Proyecto
+                        proyecto={proyecto}
+                    />
+                </CSSTransition>
             ))}
+            </TransitionGroup>
         </ul>
      );
 }

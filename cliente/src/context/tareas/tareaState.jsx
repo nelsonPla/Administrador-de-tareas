@@ -2,13 +2,18 @@
 import React, { useReducer } from 'react'
 import TareaContext from './tareaContext';
 import TareaReducer from './tareaReducer';
+import uuid from 'react-uuid';
 
 
 import { 
     TAREAS_PROYECTO,
     AGREGAR_TAREA,
     VALIDAR_TAREA,
-    ELIMINAR_TAREA
+    ELIMINAR_TAREA,
+    ESTADO_TAREA,
+    TAREA_ACTUAL,
+    ACTUALIZAR_TAREA,
+    LIMPIAR_TAREA
 } from '../../types/index';
 
 
@@ -31,7 +36,8 @@ const TareaState = props => {
             { id: 13, nombre: 'Elegir Plataformas de Pago', estado: true, proyectoId: 1 }
         ],
         tareasproyecto: null,
-        errortarea: false
+        errortarea: false,
+        tareaseleccionada: null
     }
 
     // Crear dispatch y state
@@ -50,6 +56,7 @@ const TareaState = props => {
 
     // Agrear tarea a proyecto seleccionado
     const agregarTarea = tarea => {
+        tarea.id = uuid();
         dispatch({
             type: AGREGAR_TAREA,
             payload: tarea
@@ -71,16 +78,52 @@ const TareaState = props => {
         })
     }
 
+    //cambia el estado de cada tarea
+    const cambiarEstadoTarea = tarea => {
+        dispatch({
+            type: ESTADO_TAREA,
+            payload: tarea
+        })
+    }
+
+    //extrae una tarea para edición
+    const guardarTareaActual = tarea => {
+        dispatch({
+            type: TAREA_ACTUAL,
+            payload: tarea
+        })
+    }
+
+    //actualiza la tarea
+    const actualizarTarea = tarea => {
+        dispatch({
+            type: ACTUALIZAR_TAREA,
+            payload: tarea
+        })
+    }
+
+    //limpiar o eliminar tarea seleccionada
+    const limpiarTarea = () => {
+        dispatch({
+            type: LIMPIAR_TAREA
+        })
+    }
+
     return (
         <TareaContext.Provider
             value={{
                 tareas: state.tareas,
                 tareasproyecto: state.tareasproyecto,
                 errortarea: state.errortarea,
+                tareaseleccionada: state.tareaseleccionada,
                 obtenerTareas,
                 agregarTarea,
                 validarTarea,
-                eliminarTarea
+                eliminarTarea,
+                cambiarEstadoTarea,
+                guardarTareaActual,
+                actualizarTarea,
+                limpiarTarea
             }}
         >
             {props.children}
