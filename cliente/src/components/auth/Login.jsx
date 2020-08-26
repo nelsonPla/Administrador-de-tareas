@@ -21,6 +21,7 @@ const Login = (props) => {
         if(mensaje) {
             mostrarAlerta(mensaje.msg, mensaje.categoria);
         }
+        // eslint-disable-next-line
     }, [mensaje, autenticado, props.history]);//props lo podemos usar por que estamos usando react dom
 
     //state para iniciar sesión
